@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helios</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#fafafa;font-family:'Inter',system-ui,sans-serif;overflow:hidden;user-select:none}
+#toolbar{position:fixed;top:0;left:0;right:0;height:44px;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #27272a;z-index:1000;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+#toolbar span{font-size:13px;color:#52525b}
+#toolbar span::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:#84cc16;margin-right:8px;vertical-align:middle;box-shadow:0 0 8px rgba(132,204,22,0.4)}
+button{padding:6px 16px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;margin-left:8px;transition:all .15s}
+#cancel-btn{background:rgba(255,255,255,0.04);color:#52525b;border:1px solid #27272a}
+#cancel-btn:hover{background:rgba(255,255,255,0.08);color:#a1a1aa}
+#confirm-btn{background:#84cc16;color:#000;font-weight:600}
+#confirm-btn:hover{box-shadow:0 0 20px -4px rgba(132,204,22,0.4)}
+#confirm-btn:disabled{background:#27272a;color:#52525b;box-shadow:none;cursor:not-allowed}
+#container{position:fixed;top:44px;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;background:#000;overflow:hidden}
+#wrapper{position:relative;display:inline-block;line-height:0}
+#screenshot{display:block;cursor:crosshair;border-radius:2px}
+#sel-box{position:absolute;top:0;left:0;border:1.5px solid #84cc16;background:rgba(132,204,22,0.04);pointer-events:none;display:none;z-index:100;box-shadow:0 0 24px -4px rgba(132,204,22,0.12)}
+#sel-label{position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);background:#18181b;color:#a1a1aa;font:11px/1.4 'Inter',system-ui,sans-serif;padding:3px 10px;border-radius:6px;white-space:nowrap;display:none;border:1px solid #27272a}
+
+#result-view{display:none;position:fixed;top:0;left:0;right:0;bottom:0;flex-direction:column;background:#000}
+#result-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(0,0,0,0.8);border-bottom:1px solid #27272a;cursor:move;user-select:none;flex-shrink:0}
+#result-hdr .ttl{font-size:12px;font-weight:600;letter-spacing:0.3px;color:#84cc16}
+#result-hdr .ttl::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#84cc16;margin-right:8px;vertical-align:middle;box-shadow:0 0 8px rgba(132,204,22,0.4)}
+#result-hdr button{background:none;border:none;color:#52525b;font:18px/1 system-ui;cursor:pointer;padding:2px 6px;border-radius:4px;transition:all .15s;margin:0}
+#result-hdr button:hover{color:#fafafa;background:rgba(255,255,255,0.06)}
+#result-body{flex:1;overflow-y:auto;padding:16px;word-wrap:break-word;color:#d4d4d8;font-size:13.5px;line-height:1.75}
+#result-body::-webkit-scrollbar{width:4px}
+#result-body::-webkit-scrollbar-thumb{background:#27272a;border-radius:2px}
+.loading{display:flex;align-items:center;gap:12px;color:#52525b;font-size:13px;min-height:60px;justify-content:center}
+.spinner{width:14px;height:14px;border:2px solid #27272a;border-top-color:#84cc16;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.think-toggle{cursor:pointer;user-select:none;padding:7px 10px;margin-bottom:10px;color:#a1a1aa;font-size:12px;font-weight:500;letter-spacing:0.2px;display:flex;align-items:center;gap:8px;background:rgba(132,204,22,0.06);border:1px solid rgba(132,204,22,0.12);border-radius:8px;transition:all .15s}
+.think-toggle:hover{background:rgba(132,204,22,0.1);border-color:rgba(132,204,22,0.2)}
+.think-arrow{transition:transform .2s cubic-bezier(0.16,1,0.3,1);font-size:8px;display:inline-flex;color:#84cc16}
+.think-arrow.open{transform:rotate(90deg)}
+.think-content{display:none;background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:12.5px;color:#71717a;line-height:1.7;white-space:pre-wrap;border:1px solid #27272a}
+.think-content.open{display:block}
+.main-response{font-size:13.5px;line-height:1.75;color:#d4d4d8}
+.main-response code{padding:1px 5px;background:#18181b;border-radius:4px;font-size:12.5px;color:#a3e635;font-family:'SF Mono','Fira Code','Cascadia Code',monospace}
+.main-response pre{margin:8px 0;padding:12px 14px;background:#18181b;border-radius:8px;overflow-x:auto;border:1px solid #27272a}
+.main-response pre code{padding:0;background:none;color:#d4d4d8}
+.main-response h1,.main-response h2,.main-response h3{color:#fafafa;font-weight:600;margin:12px 0 6px;line-height:1.3}
+.main-response h1{font-size:16px}
+.main-response h2{font-size:14.5px}
+.main-response h3{font-size:13.5px}
+.main-response strong{color:#fafafa}
+.copy-btn{background:rgba(255,255,255,0.04);border:1px solid #27272a;color:#52525b;font-size:11px;padding:5px 10px;border-radius:6px;cursor:pointer;transition:all .15s;line-height:1;margin-top:12px}
+.copy-btn:hover{background:rgba(132,204,22,0.1);color:#84cc16;border-color:rgba(132,204,22,0.3)}
+.copy-btn.copied{background:rgba(132,204,22,0.15);color:#84cc16;border-color:rgba(132,204,22,0.3)}
+</style>
+</head>
+<body>
+<div id="toolbar"><span>Select area to analyze</span><div><button id="cancel-btn">Cancel</button><button id="confirm-btn" disabled>Analyze</button></div></div>
+<div id="container"><div id="wrapper"><img id="screenshot" draggable="false"><div id="sel-box"><span id="sel-label"></span></div></div></div>
+<div id="result-view">
+  <div id="result-hdr"><span class="ttl">Helios</span><button id="result-close">&times;</button></div>
+  <div id="result-body"></div>
+</div>
+<script src="cropper.js"></script>
+</body>
+</html>

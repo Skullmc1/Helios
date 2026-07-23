@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="popup.css">
+  <title>Helios</title>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="dot"></span>
+      <h1>Helios</h1>
+    </div>
+
+    <div class="field">
+      <label for="api-key">API Key</label>
+      <input type="password" id="api-key" placeholder="gsk_..." spellcheck="false" autocomplete="off" />
+    </div>
+
+    <div class="field">
+      <label for="prompt">Prompt</label>
+      <textarea id="prompt" rows="3" spellcheck="false" placeholder="Explain this content like you're teaching a student..."></textarea>
+    </div>
+
+    <div class="actions">
+      <button id="save-btn">Save</button>
+      <button id="clear-btn">Clear</button>
+    </div>
+
+    <div id="status"></div>
+
+    <p class="hint">
+      Get a key at <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a>
+    </p>
+    <p class="hint">Right-click any page and select <strong>Helios</strong> to get started.</p>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

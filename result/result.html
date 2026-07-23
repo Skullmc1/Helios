@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helios</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:100vw;height:100vh;overflow:hidden;background:#000;color:#fafafa;font-family:system-ui,sans-serif;font-size:13px;line-height:1.6}
+#hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(0,0,0,0.8);border-bottom:1px solid #27272a;cursor:move;user-select:none}
+#hdr .ttl{font-size:12px;font-weight:600;letter-spacing:0.3px;color:#84cc16}
+#hdr .ttl::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#84cc16;margin-right:8px;vertical-align:middle;box-shadow:0 0 8px rgba(132,204,22,0.4)}
+#close{background:none;border:none;color:#52525b;font:18px/1 system-ui;cursor:pointer;padding:2px 4px;border-radius:4px;transition:all .15s}
+#close:hover{color:#fafafa;background:rgba(255,255,255,0.06)}
+#content{padding:14px;height:calc(100vh-37px);overflow-y:auto;color:#d4d4d8;font-size:13.5px;line-height:1.75}
+#content::-webkit-scrollbar{width:4px}
+#content::-webkit-scrollbar-thumb{background:#27272a;border-radius:2px}
+#loading{display:flex;align-items:center;gap:12px;color:#52525b;font-size:13px;min-height:60px;justify-content:center}
+.spinner{width:14px;height:14px;border:2px solid #27272a;border-top-color:#84cc16;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#response{display:none}
+#error{display:none;color:#ef4444}
+.think-toggle{cursor:pointer;user-select:none;padding:7px 10px;margin-bottom:10px;color:#a1a1aa;font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;background:rgba(132,204,22,0.06);border:1px solid rgba(132,204,22,0.12);border-radius:8px}
+.think-toggle:hover{background:rgba(132,204,22,0.1)}
+.think-arrow{transition:transform .2s cubic-bezier(0.16,1,0.3,1);font-size:8px;color:#84cc16;display:inline-flex}
+.think-arrow.open{transform:rotate(90deg)}
+.think-content{display:none;background:rgba(0,0,0,0.25);border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:12.5px;color:#71717a;line-height:1.7;white-space:pre-wrap;border:1px solid #27272a}
+.think-content.open{display:block}
+.main-response{font-size:13.5px;line-height:1.75;color:#d4d4d8;white-space:pre-wrap}
+.main-response code{padding:1px 5px;background:#18181b;border-radius:4px;font-size:12.5px;color:#a3e635;font-family:'SF Mono','Fira Code',monospace}
+.main-response pre{margin:8px 0;padding:12px 14px;background:#18181b;border-radius:8px;overflow-x:auto;border:1px solid #27272a}
+.main-response pre code{padding:0;background:none;color:#d4d4d8}
+.main-response strong{color:#fafafa}
+</style>
+</head>
+<body>
+<div id="hdr"><span class="ttl">Helios</span><button id="close">&times;</button></div>
+<div id="content">
+  <div id="loading"><div class="spinner"></div><span>Thinking...</span></div>
+  <div id="response"></div>
+  <div id="error"></div>
+</div>
+<script src="result.js"></script>
+</body>
+</html>
